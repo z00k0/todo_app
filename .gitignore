@@ -1,0 +1,6 @@
+/.env
+/projects/migrations/
+/users/migrations/
+/static/media/avatars/
+/todo.dbml
+/db.sqlite3
