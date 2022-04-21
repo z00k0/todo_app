@@ -13,7 +13,7 @@ class Project(models.Model):
         blank=True,
         null=True
     )
-    start_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата начала')
+    start_date = models.DateTimeField(verbose_name='Дата начала')  # auto_now_add=True,
     end_date = models.DateTimeField(verbose_name='Дата сдачи', blank=True, null=True)
     last_update = models.DateTimeField(verbose_name='Последнее обновление', auto_now_add=True)
     originator = models.ForeignKey(
@@ -49,6 +49,9 @@ class Project(models.Model):
         null=True
     )
 
+    def __str__(self):
+        return f'{self.number} - {self.name}'
+
 
 class Task(models.Model):
     number = models.IntegerField()
@@ -63,17 +66,17 @@ class Task(models.Model):
         null=True
     )
     duration = models.PositiveIntegerField(default=0, verbose_name='Продолжительность')
-    start_date = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата начала',
-        blank=True,
-        null=True
-    )
-    end_date = models.DateTimeField(
-        verbose_name='Дата сдачи',
-        blank=True,
-        null=True
-    )
+    # start_date = models.DateTimeField(
+    #     auto_now_add=True,
+    #     verbose_name='Дата начала',
+    #     blank=True,
+    #     null=True
+    # )
+    # end_date = models.DateTimeField(
+    #     verbose_name='Дата сдачи',
+    #     blank=True,
+    #     null=True
+    # )
     last_update = models.DateTimeField(verbose_name='Последнее обновление', auto_now_add=True)
     originator = models.ForeignKey(
         AppUser,
@@ -107,3 +110,6 @@ class Task(models.Model):
         blank=True,
         null=True
     )
+
+    def __str__(self):
+        return f'{self.project.number} - {self.project.name} - {self.name}'

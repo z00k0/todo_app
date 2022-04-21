@@ -1,0 +1,39 @@
+{% extends "projects/layout.html" %}
+
+{% block body %}
+<h3>Проекты</h3>
+
+<div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Адрес</th>
+                <th scope="col">Исполнитель</th>
+                <th scope="col">Ссылка на проект</th>
+                <th scope="col">Whatsapp</th>
+                <th scope="col">Начало</th>
+                <th scope="col">Окончание</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in project_list %}
+            <tr>
+                <td>{{ project.number }}</td>
+                <td>{{ project.address }}</td>
+                <td>{{ project.executor }}</td>
+                <td><a class="project_link" href="{{ project.project_link }}">Ссылка на проект</a></td>
+                <td><a class="whatsapp_link " href="{{ 'https://wa.me/'}}{{ project.executor.mobile }}">{{ project.executor.mobile }}</a></td>
+                <td>{{ project.start_date|date:"D, d, M, Y" }}</td>
+                <td>{{ project.end_date|date:"D, d, M, Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+</div>
+
+{% endblock %}
