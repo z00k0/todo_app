@@ -1,9 +1,12 @@
 from django.db import models
+from django.urls import reverse
+from slugify import slugify
+
 from users.models import AppUser
 
 
 class Project(models.Model):
-    number = models.PositiveIntegerField(primary_key=True)
+    number = models.PositiveIntegerField(primary_key=True, verbose_name='Номер')
     name = models.CharField(max_length=100, verbose_name='Название')
     address = models.CharField(max_length=100, verbose_name='Адрес')
     slug = models.SlugField(max_length=100, unique=True)
@@ -13,7 +16,7 @@ class Project(models.Model):
         blank=True,
         null=True
     )
-    start_date = models.DateTimeField(verbose_name='Дата начала')  # auto_now_add=True,
+    start_date = models.DateTimeField(verbose_name='Дата начала', blank=True, null=True)
     end_date = models.DateTimeField(verbose_name='Дата сдачи', blank=True, null=True)
     last_update = models.DateTimeField(verbose_name='Последнее обновление', auto_now_add=True)
     originator = models.ForeignKey(
@@ -48,9 +51,17 @@ class Project(models.Model):
         blank=True,
         null=True
     )
+    is_finished = models.BooleanField(default=False, verbose_name='Закончен')
 
     def __str__(self):
         return f'{self.number} - {self.name}'
+
+    def get_absolute_url(self):
+        return reverse('project', kwargs={'project_slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(str(self.number) + '-' + self.name)
+        super(Project, self).save(*args, kwargs)
 
 
 class Task(models.Model):
@@ -113,3 +124,6 @@ class Task(models.Model):
 
     def __str__(self):
         return f'{self.project.number} - {self.project.name} - {self.name}'
+
+    def get_absolute_url(self):
+        return reverse('tasks', kwargs={'task_slug': self.slug})

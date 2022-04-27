@@ -1,0 +1,31 @@
+{% extends "projects/layout.html" %}
+
+{% block body %}
+<div>
+    # {{ project.number }}
+</div>
+<div>
+    Адрес: {{ project.address }}
+</div>
+<div>
+    Ссылка на проект: {{ project.project_link }}
+</div>
+<div>
+    Начало: {{ project.start_date }}
+</div>
+<div>
+    Окончание: {{ project.end_date }}
+</div>
+<div>
+    Постановщик: {{ project.originator }}
+</div>
+<div>
+    Исполнитель: {{ project.executor }}
+</div>
+
+{% for task in project.projects.all %}
+<div>
+    {{ task.name }} - {{ task.duration }}
+</div>
+{% endfor %}
+{% endblock %}

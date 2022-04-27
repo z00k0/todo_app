@@ -1,7 +1,6 @@
 {% extends "projects/layout.html" %}
 
 {% block body %}
-<h3>Проекты</h3>
 
 <div>
 
@@ -18,13 +17,13 @@
             </tr>
         </thead>
         <tbody>
-            {% for project in project_list %}
+            {% for project in projects %}
             <tr>
                 <td>{{ project.number }}</td>
-                <td>{{ project.address }}</td>
+                <td><a href="{{ project.slug }}">{{ project.name }}</a></td>
                 <td>{{ project.executor }}</td>
-                <td><a class="project_link" href="{{ project.project_link }}">Ссылка на проект</a></td>
-                <td><a class="whatsapp_link " href="{{ 'https://wa.me/'}}{{ project.executor.mobile }}">{{ project.executor.mobile }}</a></td>
+                <td><a class="project_link" target="_blank" rel="noopener noreferrer" href="{{ project.project_link }}">{{ project.project_link|truncatechars:20 }}</a></td>
+                <td><a class="whatsapp_link" target="_blank" rel="noopener noreferrer" href="{{ 'https://wa.me/'}}{{ project.executor.mobile }}">{{ project.executor.mobile }}</a></td>
                 <td>{{ project.start_date|date:"D, d, M, Y" }}</td>
                 <td>{{ project.end_date|date:"D, d, M, Y" }}</td>
             </tr>

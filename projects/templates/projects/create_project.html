@@ -1,0 +1,19 @@
+{% extends "projects/layout.html" %}
+
+{% block body %}
+
+<div class="container">
+    <form action="{% url 'projects:add_project' %}" method="post">{% csrf_token %}
+        <div>
+            {% for field in form %}
+            <div class="input-group mb-3">
+                <span class="input-group-text" >{{ field.label }}</span>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <input class="btn btn-primary" type="submit" value="Сохранить">
+        </div>
+    </form>
+</div>
+{% endblock %}
+
