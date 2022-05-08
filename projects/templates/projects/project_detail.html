@@ -1,31 +1,89 @@
 {% extends "projects/layout.html" %}
 
 {% block body %}
-<div>
-    # {{ project.number }}
-</div>
-<div>
-    Адрес: {{ project.address }}
-</div>
-<div>
-    Ссылка на проект: {{ project.project_link }}
-</div>
-<div>
-    Начало: {{ project.start_date }}
-</div>
-<div>
-    Окончание: {{ project.end_date }}
-</div>
-<div>
-    Постановщик: {{ project.originator }}
-</div>
-<div>
-    Исполнитель: {{ project.executor }}
+<div class="container">
+        <div class="row">
+            <div class="col-7">
+                Номер:
+            </div>
+            <div class="col">
+                {{ project.number }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-7">
+                Адрес:
+            </div>
+            <div class="col">
+                {{ project.address }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-7">
+                Ссылка на проект:
+            </div>
+            <div class="col">
+                <a class="project_link" target="_blank" rel="noopener noreferrer" href="{{ project.project_link }}">{{ project.project_link|truncatechars:30 }}</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-7">
+                Начало:
+            </div>
+            <div class="col">
+                {{ project.project_start_date|date:"d-m-Y" }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-7">
+                Окончание:
+            </div>
+            <div class="col">
+                {{ project.project_end_date|date:"d-m-Y" }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-7">
+                Постановщик:
+            </div>
+            <div class="col">
+                {% if project.oroginator %}
+                {{ project.originator }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-7">
+                Исполнитель:
+            </div>
+            <div class="col">
+                {% if project.executor %}
+                {{ project.executor }}
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+
+            {% for task in project.projects.all %}
+            <div class="row mx-10">
+                <div class="col-1" style="background-color: {{ task.field_color }}"></div>
+                <div class="col-6" style="background-color: {{ task.field_color }}20;">
+                {{ task.name }}
+                </div>
+                <div class="col" style="background-color: {{ task.field_color }}20;">
+                {{ task.duration }}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="mt-10 mx-auto">
+                <form action="{% url 'projects:project_edit' project.slug %}">
+                    <input type="submit" value="Редактировать" class="btn btn-primary my-2"/>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
-{% for task in project.projects.all %}
-<div>
-    {{ task.name }} - {{ task.duration }}
-</div>
-{% endfor %}
 {% endblock %}

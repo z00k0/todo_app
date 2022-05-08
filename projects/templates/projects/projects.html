@@ -24,8 +24,8 @@
                 <td>{{ project.executor }}</td>
                 <td><a class="project_link" target="_blank" rel="noopener noreferrer" href="{{ project.project_link }}">{{ project.project_link|truncatechars:20 }}</a></td>
                 <td><a class="whatsapp_link" target="_blank" rel="noopener noreferrer" href="{{ 'https://wa.me/'}}{{ project.executor.mobile }}">{{ project.executor.mobile }}</a></td>
-                <td>{{ project.start_date|date:"D, d, M, Y" }}</td>
-                <td>{{ project.end_date|date:"D, d, M, Y" }}</td>
+                <td>{{ project.project_start_date|date:"d, M, Y" }}</td>
+                <td>{{ project.project_end_date|date:"d, M, Y" }}</td>
             </tr>
             {% endfor %}
         </tbody>

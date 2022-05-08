@@ -16,8 +16,8 @@ class Project(models.Model):
         blank=True,
         null=True
     )
-    start_date = models.DateTimeField(verbose_name='Дата начала', blank=True, null=True)
-    end_date = models.DateTimeField(verbose_name='Дата сдачи', blank=True, null=True)
+    project_start_date = models.DateField(verbose_name='Дата начала', blank=True, null=True)
+    project_end_date = models.DateField(verbose_name='Дата окончания', blank=True, null=True)
     last_update = models.DateTimeField(verbose_name='Последнее обновление', auto_now_add=True)
     originator = models.ForeignKey(
         AppUser,
@@ -35,29 +35,14 @@ class Project(models.Model):
         blank=True,
         null=True
     )
-    coexecutor = models.ForeignKey(
-        AppUser,
-        related_name='project_coexecutors',
-        verbose_name='Соисполнитель',
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True
-    )
-    auditor = models.ForeignKey(
-        AppUser,
-        related_name='project_auditors',
-        verbose_name='Наблюдатель',
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True
-    )
+
     is_finished = models.BooleanField(default=False, verbose_name='Закончен')
 
     def __str__(self):
         return f'{self.number} - {self.name}'
 
     def get_absolute_url(self):
-        return reverse('project', kwargs={'project_slug': self.slug})
+        return reverse('projects:project', kwargs={'project_slug': self.slug})
 
     def save(self, *args, **kwargs):
         self.slug = slugify(str(self.number) + '-' + self.name)
@@ -65,7 +50,7 @@ class Project(models.Model):
 
 
 class Task(models.Model):
-    number = models.IntegerField()
+    number = models.IntegerField(verbose_name='Номер')
     name = models.CharField(max_length=100, verbose_name='Задача')
     slug = models.SlugField(max_length=100, unique=True)
     project = models.ForeignKey(
@@ -77,17 +62,17 @@ class Task(models.Model):
         null=True
     )
     duration = models.PositiveIntegerField(default=0, verbose_name='Продолжительность')
-    # start_date = models.DateTimeField(
-    #     auto_now_add=True,
-    #     verbose_name='Дата начала',
-    #     blank=True,
-    #     null=True
-    # )
-    # end_date = models.DateTimeField(
-    #     verbose_name='Дата сдачи',
-    #     blank=True,
-    #     null=True
-    # )
+    task_start_date = models.DateField(
+        auto_now_add=True,
+        verbose_name='Дата начала',
+        blank=True,
+        null=True
+    )
+    task_end_date = models.DateField(
+        verbose_name='Дата сдачи',
+        blank=True,
+        null=True
+    )
     last_update = models.DateTimeField(verbose_name='Последнее обновление', auto_now_add=True)
     originator = models.ForeignKey(
         AppUser,
@@ -105,25 +90,19 @@ class Task(models.Model):
         blank=True,
         null=True
     )
-    coexecutor = models.ForeignKey(
-        AppUser,
-        related_name='task_coexecutors',
-        verbose_name='Соисполнитель',
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True
-    )
-    auditor = models.ForeignKey(
-        AppUser,
-        related_name='task_auditors',
-        verbose_name='Наблюдатель',
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True
-    )
+    field_color = models.CharField(max_length=15, blank=True, null=True, verbose_name='Цвет')
+
+    is_finished = models.BooleanField(default=False, verbose_name='Закончен')
 
     def __str__(self):
         return f'{self.project.number} - {self.project.name} - {self.name}'
 
     def get_absolute_url(self):
         return reverse('tasks', kwargs={'task_slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(str(self.project.number) + '-' + str(self.project.name) + '-' + str(self.name))
+        super(Task, self).save(*args, kwargs)
+
+    class Meta:
+        ordering = ('number', )
