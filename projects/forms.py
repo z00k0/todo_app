@@ -11,15 +11,15 @@ class ProjectForm(forms.ModelForm):
         widget=forms.SelectDateWidget(attrs={'class': 'form-control'}, empty_label=''),
         label='Дата начала',
     )
-    project_end_date = forms.DateField(
-        initial=datetime.today(),
-        widget=forms.SelectDateWidget(attrs={'class': 'form-control'}, empty_label=''),
-        label='Дата окончания',
-    )
+    # project_end_date = forms.DateField(
+    #     initial=datetime.today(),
+    #     widget=forms.SelectDateWidget(attrs={'class': 'form-control'}, empty_label=''),
+    #     label='Дата окончания',
+    # )
 
     class Meta:
         model = Project
-        exclude = ['slug']
+        exclude = ['slug', 'project_end_date']
         widgets = {
             'number': forms.NumberInput(attrs={'class': 'form-control'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -89,21 +89,21 @@ data = {
 
 }
 
-AddTaskFormSet = modelformset_factory(
-    Task,
-    form=TaskForm,
-    # fields='__all__',
-    exclude=['slug', 'project', 'originator'],
-    can_delete=True,
-    max_num=20,
-    absolute_max=30,
-)
+# AddTaskFormSet = modelformset_factory(
+#     Task,
+#     form=TaskForm,
+#     # fields='__all__',
+#     exclude=['slug', 'project', 'originator'],
+#     can_delete=True,
+#     max_num=20,
+#     absolute_max=30,
+# )
 TasksInlineFormSet = inlineformset_factory(
     Project,
     Task,
     form=TaskForm,
     fields='__all__',
-    extra=1,
+    extra=0,
     can_order=True,
     
 )

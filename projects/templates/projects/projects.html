@@ -22,8 +22,8 @@
                 <td>{{ project.number }}</td>
                 <td><a href="{{ project.slug }}">{{ project.name }}</a></td>
                 <td>{{ project.executor }}</td>
-                <td><a class="project_link" target="_blank" rel="noopener noreferrer" href="{{ project.project_link }}">{{ project.project_link|truncatechars:20 }}</a></td>
-                <td><a class="whatsapp_link" target="_blank" rel="noopener noreferrer" href="{{ 'https://wa.me/'}}{{ project.executor.mobile }}">{{ project.executor.mobile }}</a></td>
+                <td><a class="project_link" target="_blank" rel="noopener noreferrer" href="{{ project.project_link }}"><img src="/media/icons/icons8-google-sheets-24.png" alt="" />{{ project.project_link|truncatechars:20 }}</a></td>
+                <td><a class="whatsapp_link" target="_blank" rel="noopener noreferrer" href="{{ 'https://wa.me/'}}{{ project.executor.mobile }}"><img src="/media/icons/icons8-whatsapp-24.png" alt="" />{{ project.executor.mobile }}</a></td>
                 <td>{{ project.project_start_date|date:"d, M, Y" }}</td>
                 <td>{{ project.project_end_date|date:"d, M, Y" }}</td>
             </tr>

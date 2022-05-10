@@ -4,9 +4,10 @@ from django.views.generic import ListView, DetailView, CreateView, View, FormVie
 from django.forms import formset_factory, modelformset_factory, inlineformset_factory
 
 from .models import Project, Task
-from .forms import ProjectForm, TaskForm, AddTaskFormSet, TasksInlineFormSet
+from .forms import ProjectForm, TaskForm, TasksInlineFormSet  # AddTaskFormSet,
 
 from users.models import AppUser
+import datetime
 
 
 class ProjectList(ListView):
@@ -42,6 +43,7 @@ class AddProject(CreateView):
     form_class = ProjectForm
     template_name = 'projects/project_create.html'
     context_object_name = 'add_project'
+
     # print(dir(form_class.slug))
     # success_url = reverse_lazy('projects:projects')#, kwargs={'project_slug': slug})
 
@@ -122,20 +124,17 @@ class AddTasksForProject(View):
         bound_formset = TasksInlineFormSet(request.POST, prefix='tasks', instance=project)
         if bound_form.is_valid() and bound_formset.is_valid():
             print('all valid')
-            edited_project = bound_form.save()
+            project_duration = 0
             instances = bound_formset.save(commit=False)
             for instance in instances:
                 instance.project = project
                 instance.save()
+            for task in project.tasks.all():
+                project_duration += task.duration
+            project.project_end_date = bound_form.cleaned_data['project_start_date'] + datetime.timedelta(days=project_duration)
+            bound_form.save()
         else:
             print(f'{bound_form.errors=}\n{bound_formset.errors=}')
-        # if bound_formset.is_valid():
-        #     print('formset is valid')
-        #     print(f"{bound_formset.cleaned_data=}")
-        #
-        # else:
-        #     print('formset invalid')
-        #     print(f"{bound_formset.errors=}")
 
         task_formset = TasksInlineFormSet(prefix='tasks', instance=project)
         form = ProjectForm(instance=project)

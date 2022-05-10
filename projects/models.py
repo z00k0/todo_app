@@ -55,7 +55,7 @@ class Task(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     project = models.ForeignKey(
         Project,
-        related_name='projects',
+        related_name='tasks',
         verbose_name='Проект',
         on_delete=models.SET_NULL,
         blank=True,
