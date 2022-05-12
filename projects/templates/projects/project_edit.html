@@ -3,17 +3,15 @@
 {% block body %}
 
 <div class="container">
-    <form action="{% url 'projects:project_create' %}" method="post">{% csrf_token %}
-        {{ form.management_form }}
-        {{ task_formset.management_form }}
-{#        {% for hidden_field in task_formset.hidden_fields %}#}
-{#            {{ hidden_field.errors }}#}
-{#            {{ hidden_field }}#}
-{#        {% endfor %}#}
+    <form action="{% url 'projects:project_edit' project.slug %}" method="post">{% csrf_token %}
+
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
         <div><p>Проект:</p>
             <hr>
             {% for field in form %}
-
             <div class="input-group mb-2">
                 <span class="input-group-text" >{{ field.label }}</span>
                 {{ field }}
@@ -24,27 +22,23 @@
             <div>
                 <div class="row">
 
-{#                    {% for hidden_field in task_formset.hidden_fields %}#}
-{#                        {{ hidden_field.errors }}#}
-{#                        {{ hidden_field }}#}
-{#                    {% endfor %}#}
+                    {{ task_formset.management_form }}
+                    {% for form in task_formset %}
+                        <div class="col-1" style="background-color: {{ form.field_color.value }}; width: 5%"></div>
+                        <div class="col-11" style="width: 95%; background-color: {{ form.field_color.value }}15">
 
-
-                    {% for forms in task_formset %}
-                        <div class="col-1" style="background-color: {{ forms.field_color.value }}; width: 5%"></div>
-                        <div class="col-11" style="width: 95%; background-color: {{ forms.field_color.value }}15">
-{#                        {{ forms.id }}#}
-
-                        {% for hidden in forms.hidden_fields %}
+                        {% for hidden in form.hidden_fields %}
                             {{ hidden }}
                             {{ hidden.errors }}
                         {% endfor %}
 
-                        {% for field in forms.visible_fields %}
+                        {% for field in form.visible_fields %}
                             <div class="input-group mb-2">
                                 <span class="input-group-text" >{{ field.label_tag }}</span>{{ field }}
                             </div>
                         {% endfor %}
+
+
 
                         </div>
                         <hr>

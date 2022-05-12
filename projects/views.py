@@ -1,13 +1,40 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, View, FormView
-from django.forms import formset_factory, modelformset_factory, inlineformset_factory
 
 from .models import Project, Task
-from .forms import ProjectForm, TaskForm, TasksInlineFormSet  # AddTaskFormSet,
+from .forms import ProjectForm, TasksInlineFormSet, TasksModelFormSet
 
-from users.models import AppUser
 import datetime
+
+
+initial = [
+    {'number': 1,
+     'name': 'Встреча-знакомство, анкетирование',
+     'duration': 5,
+     'field_color': '#ff0000'},
+    {'number': 2,
+     'name': 'Обмерный план, планировочные решения',
+     'duration': 4,
+     'field_color': '#fce5cd'},
+    {'number': 3,
+     'name': 'Утверждение планировки',
+     'duration': 1,
+     'field_color': '#ffff00'},
+    {'number': 4,
+     'name': 'Схемы размещения освещения, розеток и выключателей (1 вариант+2 корректировки)',
+     'duration': 3,
+     'field_color': '#d9ffd3'},
+    {'number': 5,
+     'name': 'Утверждение схем размещения освещения, розеток и выключателей',
+     'duration': 1,
+     'field_color': '#93c47d'},
+    {'number': 6,
+     'name': 'Уточнение листа опций видов работ',
+     'duration': 1,
+     'field_color': '#c9daf8'}
+]
 
 
 class ProjectList(ListView):
@@ -39,79 +66,18 @@ class ProjectDetail(DetailView):
         return context
 
 
-class AddProject(CreateView):
-    form_class = ProjectForm
-    template_name = 'projects/project_create.html'
-    context_object_name = 'add_project'
-
-    # print(dir(form_class.slug))
-    # success_url = reverse_lazy('projects:projects')#, kwargs={'project_slug': slug})
-
-
-# class AddTaskSet(CreateView):
-
-#     form_class = ProjectForm
-#     task_formset = AddTaskFormSet(data=data, prefix='tasks', queryset=Task.objects.none())
-#
-#     template_name = 'projects/taskset_create.html'
-#     context_object_name = 'add_task_set'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(AddTaskSet, self).get_context_data(**kwargs)
-#         if self.request.POST:
-#             context['task_formset'] = AddTaskFormSet(self.request.POST, prefix='tasks', queryset=Task.objects.none())
-#         else:
-#             context['task_formset'] = self.task_formset  # AddTaskFormSet(data=data, prefix='tasks')
-#         return context
-#
-#     def form_valid(self, form):
-#         context = self.get_context_data()
-#         task_formset = context['task_formset']
-#         # task_formset.auto_id = True
-#         print(f'{self.task_formset=}')
-#         print(f'1.{self.task_formset[0]=}')
-#         print(f'{self.task_formset[0].is_valid()=}')
-#         if self.task_formset[0].is_valid():
-#             print(f"{self.task_formset[0].cleaned_data=}")
-#         if form.is_valid():
-#             print(f'{form.cleaned_data=}')
-#             for form in self.task_formset:
-#                 print(f"{dir(form.fields['id'].choices)=}")
-#                 for choice in form.fields['id'].choices:
-#                     print(f"{choice=}")
-#                 print(f"{form.fields['id'].choices.choice=}")
-#             if self.task_formset.is_valid():
-#                 print(f'{task_formset.cleaned_data=}')
-#                 print('formset valid')
-#                 project = form.save()
-#                 # for obj in task_formset.deleted_objects:
-#                 #     obj.delete()
-#                 print(f'2.{project=}')
-#                 instances = task_formset.save(commit=False)
-#                 print(f"3.{instances=}")
-#                 for instance in instances:
-#                     instance.project = project
-#                     instance.save()
-#                 return project.get_absolute_url()
-#
-#         print(f'{self.task_formset.non_form_errors()=}')
-#         print(f'{self.task_formset.errors=}')
-#         return self.render_to_response(context)
-
-
-class AddTasksForProject(View):
+class ProjectEdit(View):
     # form_class = ProjectForm
-    template_name = 'projects/taskset_create.html'
+    template_name = 'projects/project_edit.html'
     context_object_name = 'project_edit'
 
     # slug_url_kwarg = 'project_slug'
 
     def get(self, request, project_slug, *args, **kwargs):
-        print(f'{project_slug=}')
         project = get_object_or_404(Project, slug=project_slug)
         form = ProjectForm(instance=project)
         task_formset = TasksInlineFormSet(prefix='tasks', instance=project)
-        print(f"{request=}")
+
         return render(
             request,
             template_name=self.template_name,
@@ -131,17 +97,77 @@ class AddTasksForProject(View):
                 instance.save()
             for task in project.tasks.all():
                 project_duration += task.duration
-            project.project_end_date = bound_form.cleaned_data['project_start_date'] + datetime.timedelta(days=project_duration)
+            project.project_end_date = bound_form.cleaned_data['project_start_date'] + datetime.timedelta(
+                days=project_duration)
             bound_form.save()
+            return HttpResponseRedirect(reverse('projects:projects'))
         else:
             print(f'{bound_form.errors=}\n{bound_formset.errors=}')
 
-        task_formset = TasksInlineFormSet(prefix='tasks', instance=project)
-        form = ProjectForm(instance=project)
-        print(f'{bound_formset.non_form_errors()=}')
-        print(f'{bound_formset.errors=}')
+            task_formset = TasksInlineFormSet(prefix='tasks', instance=project)
+            form = ProjectForm(instance=project)
+            print(f'{bound_formset.non_form_errors()=}')
+            print(f'{bound_formset.errors=}')
+            return render(
+                request,
+                template_name=self.template_name,
+                context={'project': project, 'form': form, 'task_formset': task_formset}
+            )
+
+
+class TaskSetCreate(View):
+    # form_class = ProjectForm
+    template_name = 'projects/taskset_create.html'
+    context_object_name = 'project_create'
+
+    # slug_url_kwarg = 'project_slug'
+
+    def get(self, request, *args, **kwargs):
+        form = ProjectForm()
+        task_formset = TasksModelFormSet(prefix='tasks', initial=initial, queryset=Project.objects.none())
         return render(
             request,
             template_name=self.template_name,
-            context={'project': project, 'form': form, 'task_formset': task_formset}
+            context={'form': form, 'task_formset': task_formset}  # 'project': project,
         )
+
+    def post(self, request, *args, **kwargs):
+        # project = get_object_or_404(Project, slug=project_slug)
+        bound_form = ProjectForm(request.POST)
+        bound_formset = TasksModelFormSet(data=request.POST, prefix='tasks')
+
+        if bound_form.is_valid() and bound_formset.is_valid():
+            print('all valid')
+            project_duration = 0
+            project = bound_form.save(commit=False)
+            instances = bound_formset.save(commit=False)
+            start_date = project.project_start_date
+            for instance in instances:
+                instance.project = project
+                project_duration += instance.duration
+                instance.task_start_date = start_date
+                instance.task_end_date = start_date + datetime.timedelta(days=instance.duration)
+                start_date = instance.task_end_date
+                instance.originator = project.originator
+                instance.executor = project.executor
+
+            print(f"{project.project_start_date=}")
+            print(f"{project_duration=}")
+            project.project_end_date = project.project_start_date + datetime.timedelta(
+                days=project_duration)
+            print(f"{project.project_end_date=}")
+
+            bound_form.save()
+            bound_formset.save()
+            return HttpResponseRedirect(reverse('projects:projects'))
+        else:
+            print(f'{bound_form.errors=}\n{bound_formset.errors=}\n{bound_formset.non_form_errors()=}')
+
+            bound_formset = TasksModelFormSet(prefix='tasks', queryset=Project.objects.none(), initial=initial)
+            form = ProjectForm()
+
+            return render(
+                request,
+                template_name=self.template_name,
+                context={'project': project, 'form': form, 'task_formset': bound_formset}
+            )

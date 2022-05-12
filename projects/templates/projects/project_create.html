@@ -2,8 +2,8 @@
 
 {% block body %}
 
-<div class="container">
-    <form action="{% url 'projects:add_project' %}" method="post">{% csrf_token %}
+<div class="container my-3">
+    <form action="{% url 'projects:project_create' %}" method="post">{% csrf_token %}
         <div>
             {% for field in form %}
             <div class="input-group mb-3">
@@ -11,8 +11,18 @@
                 {{ field }}
             </div>
             {% endfor %}
-            <input class="btn btn-primary my-2" type="submit" value="Сохранить">
+
+{#            <div class="form-group">#}
+{#                <select class="form-control" name="project_id">#}
+{#                    {% for project in project_list %}#}
+{#                    <option value="{{project.number}}">{{project}}</option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+{#            </div>#}
+
+            <input class="btn btn-primary my-3" type="submit" value="Сохранить">
         </div>
+
     </form>
 
 

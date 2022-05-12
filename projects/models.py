@@ -52,7 +52,7 @@ class Project(models.Model):
 class Task(models.Model):
     number = models.IntegerField(verbose_name='Номер')
     name = models.CharField(max_length=100, verbose_name='Задача')
-    slug = models.SlugField(max_length=100, unique=True)
+    # slug = models.SlugField(max_length=100, unique=True)
     project = models.ForeignKey(
         Project,
         related_name='tasks',
@@ -95,14 +95,14 @@ class Task(models.Model):
     is_finished = models.BooleanField(default=False, verbose_name='Закончен')
 
     def __str__(self):
-        return f'{self.project.number} - {self.project.name} - {self.name}'
+        return f'{self.project_id} - {self.name}'
 
     def get_absolute_url(self):
         return reverse('tasks', kwargs={'task_slug': self.slug})
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(str(self.project.number) + '-' + str(self.project.name) + '-' + str(self.name))
-        super(Task, self).save(*args, kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.slug = slugify(str(self.project.number) + '-' + str(self.project.name) + '-' + str(self.name))
+    #     super(Task, self).save(*args, kwargs)
 
     class Meta:
-        ordering = ('number', )
+        ordering = ('-task_start_date', 'number',)

@@ -9,6 +9,6 @@ class Slugifier(admin.ModelAdmin):
 
 admin.site.register(AppUser)
 admin.site.register(Project, Slugifier)
-admin.site.register(Task, Slugifier)
+admin.site.register(Task)
 
 # Register your models here.
