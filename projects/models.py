@@ -1,4 +1,6 @@
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+from django.db.models import JSONField
 from django.urls import reverse
 from slugify import slugify
 
@@ -35,6 +37,7 @@ class Project(models.Model):
         blank=True,
         null=True
     )
+    calendar_chart = JSONField(blank=True, null=True, encoder=DjangoJSONEncoder)
 
     is_finished = models.BooleanField(default=False, verbose_name='Закончен')
 
@@ -98,11 +101,11 @@ class Task(models.Model):
         return f'{self.project_id} - {self.name}'
 
     def get_absolute_url(self):
-        return reverse('tasks', kwargs={'task_slug': self.slug})
+        return reverse('tasks', kwargs={'id': self.id})
 
     # def save(self, *args, **kwargs):
     #     self.slug = slugify(str(self.project.number) + '-' + str(self.project.name) + '-' + str(self.name))
     #     super(Task, self).save(*args, kwargs)
 
     class Meta:
-        ordering = ('-task_start_date', 'number',)
+        ordering = ('-project_id', 'number',)

@@ -1,7 +1,7 @@
 from django import forms
 from .models import Project, Task
 from datetime import datetime
-from django.forms import inlineformset_factory, formset_factory, modelformset_factory
+from django.forms import inlineformset_factory, modelformset_factory
 
 
 class ProjectForm(forms.ModelForm):
@@ -18,7 +18,7 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        exclude = ['slug', 'project_end_date']
+        exclude = ['slug', 'project_end_date', 'calendar_chart']
 
         widgets = {
             'number': forms.NumberInput(attrs={'class': 'form-control'}),

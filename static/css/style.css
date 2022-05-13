@@ -1,0 +1,19 @@
+/*.vertical-cell {*/
+/*    display: inline-block;*/
+/*    overflow: hidden;*/
+
+/*    width: 3em;*/
+/*    line-height: 2;*/
+/*}*/
+/*.vertical {*/
+/*    display: inline-block;*/
+/*    white-space: nowrap;*/
+
+/*    transform: translate(0,100%) rotate(-90deg);*/
+/*    transform-origin: 0 0;*/
+/*}*/
+/*.vertical:after {*/
+/*    content: "";*/
+/*    float: left;*/
+/*    margin-top: 100%;*/
+/*}*/

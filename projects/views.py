@@ -8,7 +8,6 @@ from .forms import ProjectForm, TasksInlineFormSet, TasksModelFormSet
 
 import datetime
 
-
 initial = [
     {'number': 1,
      'name': 'Встреча-знакомство, анкетирование',
@@ -43,9 +42,21 @@ class ProjectList(ListView):
     context_object_name = 'projects'
     allow_empty = True
 
+    chart_range = []
+    start = datetime.datetime.now()
+    end = start + datetime.timedelta(days=14)
+    while start < end:
+        chart_range.append(start.strftime('%d.%m'))
+        start += datetime.timedelta(days=1)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Проекты'
+        context['chart_range'] = self.chart_range
+        print(f'{context=}')
+        # project_first = Project.objects.first()
+        # tasks = project_first.tasks.all()
+        # context['legend'] = tasks
 
         return context
 
@@ -92,22 +103,37 @@ class ProjectEdit(View):
             print('all valid')
             project_duration = 0
             instances = bound_formset.save(commit=False)
+            start_date = project.project_start_date
+
             for instance in instances:
                 instance.project = project
                 instance.save()
+            calendar = {}
             for task in project.tasks.all():
                 project_duration += task.duration
+                task.task_start_date = start_date
+                task.task_end_date = start_date + datetime.timedelta(days=(task.duration - 1))
+                start_date = task.task_end_date + datetime.timedelta(days=1)
+                task.originator = project.originator
+                task.executor = project.executor
+
+                start = task.task_start_date
+                end = task.task_end_date
+                while start <= end:
+                    calendar[start.strftime('%d.%m')] = task.field_color
+                    start += datetime.timedelta(days=1)
+            print(f"{calendar=}")
             project.project_end_date = bound_form.cleaned_data['project_start_date'] + datetime.timedelta(
                 days=project_duration)
+            project.calendar_chart = calendar
             bound_form.save()
+            bound_formset.save()
             return HttpResponseRedirect(reverse('projects:projects'))
         else:
             print(f'{bound_form.errors=}\n{bound_formset.errors=}')
 
             task_formset = TasksInlineFormSet(prefix='tasks', instance=project)
             form = ProjectForm(instance=project)
-            print(f'{bound_formset.non_form_errors()=}')
-            print(f'{bound_formset.errors=}')
             return render(
                 request,
                 template_name=self.template_name,
@@ -146,8 +172,9 @@ class TaskSetCreate(View):
                 instance.project = project
                 project_duration += instance.duration
                 instance.task_start_date = start_date
-                instance.task_end_date = start_date + datetime.timedelta(days=instance.duration)
-                start_date = instance.task_end_date
+                instance.task_end_date = start_date + datetime.timedelta(days=(instance.duration - 1))
+                print(f"{instance.task_start_date=} - {instance.task_end_date=}")
+                start_date = instance.task_end_date + datetime.timedelta(days=1)
                 instance.originator = project.originator
                 instance.executor = project.executor
 
@@ -169,5 +196,5 @@ class TaskSetCreate(View):
             return render(
                 request,
                 template_name=self.template_name,
-                context={'project': project, 'form': form, 'task_formset': bound_formset}
+                context={'form': form, 'task_formset': bound_formset}  # 'project': project,
             )
