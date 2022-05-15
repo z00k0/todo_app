@@ -60,7 +60,7 @@ class Task(models.Model):
         Project,
         related_name='tasks',
         verbose_name='Проект',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         blank=True,
         null=True
     )
