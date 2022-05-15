@@ -5,7 +5,7 @@
 
 <div >
 
-    <table class="table">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -30,11 +30,11 @@
                 <td>{{ project.executor }}</td>
                 <td><a class="project_link" target="_blank" rel="noopener noreferrer" href="{{ project.project_link }}"><img src="/media/icons/icons8-google-sheets-24.png" alt="" />{{ project.project_link|truncatechars:20 }}</a></td>
                 <td><a class="whatsapp_link" target="_blank" rel="noopener noreferrer" href="{{ 'https://wa.me/'}}{{ project.executor.mobile }}"><img src="/media/icons/icons8-whatsapp-24.png" alt="" />{{ project.executor.mobile }}</a></td>
-                <td>{{ project.project_start_date|date:"d, M, Y" }}</td>
-                <td>{{ project.project_end_date|date:"d, M, Y" }}</td>
+                <td>{{ project.project_start_date|date:"d-m-y" }}</td>
+                <td>{{ project.project_end_date|date:"d-m-y" }}</td>
                 {%  if project.calendar_chart %}
                     {% for day in chart_range %}
-                        <td style="background-color: {{ project.calendar_chart|get_item:day }}"></td>
+                        <td class="border-right" title="{{ project.calendar_chart|get_second_item:day }}" style="background-color:{{ project.calendar_chart|get_first_item:day }}"></td>
                     {% endfor %}
                 {% endif %}
             </tr>

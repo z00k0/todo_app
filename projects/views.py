@@ -53,10 +53,6 @@ class ProjectList(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Проекты'
         context['chart_range'] = self.chart_range
-        print(f'{context=}')
-        # project_first = Project.objects.first()
-        # tasks = project_first.tasks.all()
-        # context['legend'] = tasks
 
         return context
 
@@ -81,8 +77,6 @@ class ProjectEdit(View):
     # form_class = ProjectForm
     template_name = 'projects/project_edit.html'
     context_object_name = 'project_edit'
-
-    # slug_url_kwarg = 'project_slug'
 
     def get(self, request, project_slug, *args, **kwargs):
         project = get_object_or_404(Project, slug=project_slug)
@@ -120,9 +114,8 @@ class ProjectEdit(View):
                 start = task.task_start_date
                 end = task.task_end_date
                 while start <= end:
-                    calendar[start.strftime('%d.%m')] = task.field_color
+                    calendar[start.strftime('%d.%m')] = [task.field_color, task.name]
                     start += datetime.timedelta(days=1)
-            print(f"{calendar=}")
             project.project_end_date = bound_form.cleaned_data['project_start_date'] + datetime.timedelta(
                 days=project_duration)
             project.calendar_chart = calendar
@@ -173,16 +166,12 @@ class TaskSetCreate(View):
                 project_duration += instance.duration
                 instance.task_start_date = start_date
                 instance.task_end_date = start_date + datetime.timedelta(days=(instance.duration - 1))
-                print(f"{instance.task_start_date=} - {instance.task_end_date=}")
                 start_date = instance.task_end_date + datetime.timedelta(days=1)
                 instance.originator = project.originator
                 instance.executor = project.executor
 
-            print(f"{project.project_start_date=}")
-            print(f"{project_duration=}")
             project.project_end_date = project.project_start_date + datetime.timedelta(
                 days=project_duration)
-            print(f"{project.project_end_date=}")
 
             bound_form.save()
             bound_formset.save()
