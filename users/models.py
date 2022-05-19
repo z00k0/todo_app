@@ -39,7 +39,6 @@ class CustomUserManager(BaseUserManager):
 
 
 class AppUser(AbstractBaseUser, PermissionsMixin):
-    # id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True, verbose_name='Email')
     first_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='Имя')
     last_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='Фамилия')

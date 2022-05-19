@@ -1,0 +1,29 @@
+{% extends "users/layout.html" %}
+
+{% block body %}
+
+<div class="container my-3">
+    <form method="POST">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        {% endif %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}: </label>
+                {{ field }}
+            </div>
+            <div class="invalid-feedback">{{ field.errors.as_ul }}</div>
+        {% endfor %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Регистрация</button>
+
+    </form>
+</div>
+
+{% endblock %}

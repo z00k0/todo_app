@@ -17,3 +17,18 @@
 /*    float: left;*/
 /*    margin-top: 100%;*/
 /*}*/
+
+.tableFixedHead {
+    overflow: auto;
+    height: 600px;
+}
+
+.tableFixedHead thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.td-date {
+    min-width: 90px;
+}
