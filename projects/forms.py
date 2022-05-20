@@ -7,14 +7,9 @@ from django.forms import inlineformset_factory, modelformset_factory
 class ProjectForm(forms.ModelForm):
     project_start_date = forms.DateField(
         initial=datetime.today(),
-        widget=forms.SelectDateWidget(attrs={'class': 'form-control'}, empty_label=''),
+        widget=forms.TextInput(attrs={'type': 'date', 'class': 'form-control'}),
         label='Дата начала',
     )
-    # project_end_date = forms.DateField(
-    #     initial=datetime.today(),
-    #     widget=forms.SelectDateWidget(attrs={'class': 'form-control'}, empty_label=''),
-    #     label='Дата окончания',
-    # )
 
     class Meta:
         model = Project
@@ -25,7 +20,7 @@ class ProjectForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'address': forms.TextInput(attrs={'class': 'form-control'}),
             'project_link': forms.TextInput(attrs={'class': 'form-control'}),
-            # 'start_date': forms.SelectDateWidget(attrs={'class': 'form-control'},),
+            # 'start_date': forms.SelectDateWidget(attrs={'type': 'date', 'class': 'form-control'},),
             # 'end_date': forms.SelectDateWidget(attrs={'class': 'form-control'}, empty_label=''),
             'originator': forms.Select(attrs={'class': 'form-control'}),
             'executor': forms.Select(attrs={'class': 'form-control'}),
@@ -57,6 +52,8 @@ class TaskForm(forms.ModelForm):
             # 'end_date': forms.SelectDateWidget(attrs={'class': 'form-control'}, empty_label=''),
             'originator': forms.Select(attrs={'class': 'form-control'}),
             'executor': forms.Select(attrs={'class': 'form-control'}),
+            'field_color': forms.TextInput(
+                attrs={'type': 'color', 'class': 'form-control', 'class': 'form-control-color'}),
             'is_finished': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'})
         }
 

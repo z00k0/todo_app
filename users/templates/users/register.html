@@ -2,28 +2,35 @@
 
 {% block body %}
 
-<div class="container my-3">
+<div class="container">
+<div class="row justify-content-sm-center ">
+<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+<h2 class="text-center"><strong>Регистрация</strong></h2>
     <form method="POST">
         {% csrf_token %}
-        {% if form.non_field_errors %}
-            {% for error in form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
-        {% endif %}
+
         {% for field in form %}
-            <div class="mb-3">
-                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}: </label>
+            <div class="my-3">
+                <label class="form-label" for="{{ field.id_for_label }}"></label>
                 {{ field }}
             </div>
-            <div class="invalid-feedback">{{ field.errors.as_ul }}</div>
+            <div class="text-danger">{{ field.errors.as_ul }}</div>
         {% endfor %}
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
         {% endfor %}
 
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        <div class="my-3 d-grid mx-auto">
         <button type="submit" class="btn btn-primary">Регистрация</button>
-
+        </div>
     </form>
+</div>
+</div>
 </div>
 
 {% endblock %}

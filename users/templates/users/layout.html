@@ -30,8 +30,8 @@
                     </ul>
                     <ul class="navbar-nav d-flex">
                         {% if user.is_authenticated %}
-                            <li class="nav-item"><a class="nav-link" href="#">{{ user }}<span class="material-icons">account_circle</span></a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}"><span class="material-icons">logout</span></a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">{{ user }}<span class="material-icons" title="Профиль">account_circle</span></a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}"><span class="material-icons" title="Выход">logout</span></a></li>
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="{% url 'users:register' %}"><span class="material-icons" title="Регистрация">person_add</span></a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}"><span class="material-icons" title="Вход">login</span></a></li>

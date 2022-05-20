@@ -14,6 +14,11 @@ class RegisterView(CreateView):
     template_name = 'users/register.html'
     success_url = reverse_lazy('projects:projects')
 
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('projects:projects')
+
 
 class LogoutView(View):
     def get(self, request):
